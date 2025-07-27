@@ -1,0 +1,72 @@
+import {
+    SlashCommandBuilder,
+    ChatInputCommandInteraction,
+    PermissionFlagsBits,
+    SlashCommandStringOption,
+    PermissionsBitField,
+} from "discord.js";
+
+export default {
+    data: new SlashCommandBuilder()
+        .setName("unban")
+        .setDescription("Unban a user from the server.")
+        .addStringOption((option: SlashCommandStringOption) =>
+            option
+                .setName("userid")
+                .setDescription("The ID of the user to unban")
+                .setRequired(true)
+        )
+        .addStringOption((option: SlashCommandStringOption) =>
+            option
+                .setName("reason")
+                .setDescription("Reason for the unban")
+                .setRequired(false)
+        ),
+
+    async execute(interaction: ChatInputCommandInteraction) {
+        if (!interaction.guild) {
+            await interaction.reply({ content: "This command can only be used in a server.", ephemeral: true });
+            return;
+        }
+
+        const member = interaction.member;
+        if (!member) {
+            await interaction.reply({ content: "Could not fetch your member data.", ephemeral: true });
+            return;
+        }
+
+        // Fix for permissions possibly being a string or PermissionsBitField
+        const permissions = member.permissions instanceof PermissionsBitField
+            ? member.permissions
+            : new PermissionsBitField(BigInt(member.permissions as string));
+
+        if (!permissions.has(PermissionFlagsBits.BanMembers)) {
+            await interaction.reply({ content: "You do not have permission to unban members.", ephemeral: true });
+            return;
+        }
+
+        const botMember = interaction.guild.members.me;
+        if (!botMember || !botMember.permissions.has(PermissionFlagsBits.BanMembers)) {
+            await interaction.reply({ content: "I do not have permission to unban members.", ephemeral: true });
+            return;
+        }
+
+        const userId = interaction.options.getString("userid", true);
+        const reason = interaction.options.getString("reason") || "No reason provided";
+
+        try {
+            // Check if the user is banned first
+            const bans = await interaction.guild.bans.fetch();
+            if (!bans.has(userId)) {
+                await interaction.reply({ content: "That user is not banned.", ephemeral: true });
+                return;
+            }
+
+            await interaction.guild.bans.remove(userId, reason);
+            await interaction.reply({ content: `Successfully unbanned user with ID ${userId} for: ${reason}`, ephemeral: true });
+        } catch (error) {
+            console.error("Error unbanning user:", error);
+            await interaction.reply({ content: "There was an error trying to unban the user.", ephemeral: true });
+        }
+    },
+};
