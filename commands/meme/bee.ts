@@ -6,8 +6,8 @@ export default {
         .setDescription("Bee"),
 
     async execute(interaction: ChatInputCommandInteraction) {
-        const beeEmoji = "<:Terraria_Small_Bee:1399587480218505382>";
+        const messageContent = "<:Terraria_Small_Bee:1399587480218505382>";
 
-        await interaction.reply({ content: beeEmoji });
+        await interaction.reply({ content: messageContent });
     },
 };

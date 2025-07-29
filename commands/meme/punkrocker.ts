@@ -2,11 +2,11 @@ import { SlashCommandBuilder, ChatInputCommandInteraction } from "discord.js";
 
 export default {
     data: new SlashCommandBuilder()
-        .setName("rigby")
-        .setDescription("Rigby"),
+        .setName("punkrocker")
+        .setDescription("Cause I'm a punkrocker, yes I am"),
 
     async execute(interaction: ChatInputCommandInteraction) {
-        const messageContent = "https://tenor.com/view/rigby-cat-rigby-cat-cat-stare-rigby-tongue-gif-12118654088387148905";
+        const messageContent = "Cause I'm a punkrocker, yes I am";
 
         await interaction.reply({ content: messageContent });
     },

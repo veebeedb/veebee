@@ -9,8 +9,8 @@ A custom made bot inspired by [Red-DiscordBot](https://github.com/Cog-Creators/R
 - [ ] Plugins (Cogs), added to servers via commands.
 - [ ] Moderation System
 - [ ] Server Syncing (Ban Sync, etc)
-- [ ] Economy System
-- [ ] Music Features
+- [ ] Economy System (Banking, Shop, etc)
+- [ ] Audio Features (Music, MP3, etc)
 
 ## TBD Ideas
 - [ ] Sakura & Bee Branding
