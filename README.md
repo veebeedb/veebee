@@ -2,15 +2,18 @@
 
 A custom made bot inspired by [Red-DiscordBot](https://github.com/Cog-Creators/Red-DiscordBot), created with [Bun](https://bun.com/), [Node.js](https://nodejs.org/), [Typescript](https://www.typescriptlang.org/), and [Discord.js](https://discordjs.guide/).
 
+## Veebee Links
+[Trello Roadmap](https://trello.com/b/UiHToYsG/veebee-roadmap)
+
 ## Planned Features
-- [ ] Plugins (Cogs), added to your server via commands.
+- [ ] Plugins (Cogs), added to servers via commands.
 - [ ] Moderation System
 - [ ] Server Syncing (Ban Sync, etc)
 - [ ] Economy System
 - [ ] Music Features
 
 ## TBD Ideas
-- [ ] Sakura Theming
+- [ ] Sakura & Bee Branding
 - [ ] Allow Custom Commands
 - [ ] Ban Appeal System
 - [ ] Web Dashboard

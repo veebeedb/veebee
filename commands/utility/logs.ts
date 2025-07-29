@@ -5,7 +5,6 @@ import {
     EmbedBuilder,
 } from "discord.js";
 
-// Simple in-memory log storage (replace with DB or file in real usage)
 const modLogs: {
     action: "Ban" | "Warn" | "Timeout" | string;
     userId: string;
@@ -14,13 +13,11 @@ const modLogs: {
     moderatorTag: string;
     reason: string;
     timestamp: number;
-    duration?: string; // for timeout
+    duration?: string;
 }[] = [];
 
-// Utility function to add logs - call this from your mod commands
 export function addModLog(log: typeof modLogs[0]) {
     modLogs.push(log);
-    // Optional: limit size for memory, e.g. keep last 100 logs
     if (modLogs.length > 100) modLogs.shift();
 }
 
@@ -36,7 +33,6 @@ export default {
             return;
         }
 
-        // Show last 10 logs, newest first
         const logsToShow = modLogs.slice(-10).reverse();
 
         const embed = new EmbedBuilder()

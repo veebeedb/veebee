@@ -35,7 +35,6 @@ export default {
             return;
         }
 
-        // Fix for permissions possibly being a string or PermissionsBitField
         const permissions = member.permissions instanceof PermissionsBitField
             ? member.permissions
             : new PermissionsBitField(BigInt(member.permissions as string));
@@ -55,7 +54,6 @@ export default {
         const reason = interaction.options.getString("reason") || "No reason provided";
 
         try {
-            // Check if the user is banned first
             const bans = await interaction.guild.bans.fetch();
             if (!bans.has(userId)) {
                 await interaction.reply({ content: "That user is not banned.", ephemeral: true });

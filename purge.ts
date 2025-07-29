@@ -34,12 +34,10 @@ async function purgeAllGlobalCommands() {
         await rest.delete(Routes.applicationCommand(CLIENT_ID, command.id));
         console.log(`Deleted command: ${command.name}`);
 
-        // Wait 1.5 seconds before next delete to respect rate limits
         await wait(1500);
       } catch (deleteError) {
         console.error(`Failed to delete command ${command.name}:`, deleteError);
 
-        // Wait before continuing in case rate limited
         await wait(3000);
       }
     }
