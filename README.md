@@ -1,12 +1,12 @@
 # Veebee
 
-A custom made bot inspired by [Red-DiscordBot](https://github.com/Cog-Creators/Red-DiscordBot), created with [Bun](https://bun.com/), [Node.js](https://nodejs.org/), [Typescript](https://www.typescriptlang.org/), and [Discord.js](https://discordjs.guide/).
+A custom made bot, initialized and being created with [Bun](https://bun.com/), [Node.js](https://nodejs.org/), [Typescript](https://www.typescriptlang.org/), and [Discord.js](https://discordjs.guide/).
 
 ## Veebee Links
 [Trello Roadmap](https://trello.com/b/UiHToYsG/veebee-roadmap)
 
 ## Planned Features
-- [ ] Plugins (Cogs), added to servers via commands.
+- [ ] Plugins (Cogs), added to servers via commands. (Inspired by Red-DiscordBot)
 - [ ] Moderation System
 - [ ] Server Syncing (Ban Sync, etc)
 - [ ] Economy System (Banking, Shop, etc)
