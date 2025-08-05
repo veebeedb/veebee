@@ -10,14 +10,27 @@ import {
   Routes,
   ActivityType,
 } from "discord.js";
-import type { Command } from "./types/commands";
+
+import type {
+  ChatInputCommandInteraction,
+  RESTPostAPIChatInputApplicationCommandsJSONBody,
+} from "discord.js";
+
+export interface Command {
+  data: {
+    name: string;
+    toJSON(): RESTPostAPIChatInputApplicationCommandsJSONBody;
+  };
+  execute: (interaction: ChatInputCommandInteraction) => Promise<void>;
+}
+
+export interface ExtendedClient extends Client {
+  commands: Collection<string, Command>;
+}
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
-interface ExtendedClient extends Client {
-  commands: Collection<string, Command>;
-}
 
 const client = new Client({
   intents: [
@@ -26,30 +39,54 @@ const client = new Client({
     GatewayIntentBits.MessageContent,
   ],
 }) as ExtendedClient;
-client.commands = new Collection();
 
-const foldersPath = path.join(__dirname, "commands");
-const commandFolders = fs.readdirSync(foldersPath);
+client.commands = new Collection<string, Command>();
 
-const commands = [];
+function getAllCommandFiles(dir: string): string[] {
+  const files: string[] = [];
 
-for (const folder of commandFolders) {
-  const commandsPath = path.join(foldersPath, folder);
-  const commandFiles = fs
-    .readdirSync(commandsPath)
-    .filter((file) => file.endsWith(".ts") || file.endsWith(".js"));
+  for (const entry of fs.readdirSync(dir)) {
+    const fullPath = path.join(dir, entry);
+    const stat = fs.statSync(fullPath);
 
-  for (const file of commandFiles) {
-    const filePath = path.join(commandsPath, file);
-    const imported = await import(filePath);
-    const command = imported.default;
-
-    if ("data" in command && "execute" in command) {
-      client.commands.set(command.data.name, command);
-      commands.push(command.data.toJSON());
+    if (stat.isDirectory()) {
+      files.push(...getAllCommandFiles(fullPath));
+    } else if (
+      (fullPath.endsWith(".ts") || fullPath.endsWith(".js")) &&
+      !path.basename(fullPath).startsWith("_")
+    ) {
+      files.push(fullPath);
     }
   }
+
+  return files;
 }
+
+const cogsPath = path.join(__dirname, "cogs");
+const commandFiles = getAllCommandFiles(cogsPath);
+const commands: RESTPostAPIChatInputApplicationCommandsJSONBody[] = [];
+
+for (const filePath of commandFiles) {
+  try {
+    const fileUrl = new URL(`file://${filePath}`).href;
+    const imported = await import(fileUrl);
+
+    if (imported?.default) {
+      const command: Command = imported.default;
+      if ("data" in command && "execute" in command) {
+        const relativePath = path.relative(cogsPath, filePath);
+        const category = relativePath.split(path.sep)[0];
+        (command as any).category = category;
+
+        client.commands.set(command.data.name, command);
+        commands.push(command.data.toJSON());
+      }
+    }
+  } catch (error) {
+    console.error(`Error loading command from ${filePath}:`, error);
+  }
+}
+
 
 const rest = new REST({ version: "10" }).setToken(process.env.DISCORD_TOKEN!);
 
@@ -61,9 +98,9 @@ try {
     { body: commands }
   );
 
-  console.log("Successfully reloaded application (/) commands.");
+  console.log(`Successfully reloaded ${commands.length} application (/) commands.`);
 } catch (error) {
-  console.error(error);
+  console.error("Failed to refresh application commands:", error);
 }
 
 client.on(Events.InteractionCreate, async (interaction) => {
@@ -74,18 +111,22 @@ client.on(Events.InteractionCreate, async (interaction) => {
 
   try {
     await command.execute(interaction);
-  } catch {
+  } catch (error) {
+    console.error(`Error executing ${interaction.commandName}:`, error);
+    const content = 'There was an error executing this command!';
+
     if (interaction.replied || interaction.deferred) {
-      await interaction.followUp({ content: 'There was an error executing this command!', ephemeral: true });
+      await interaction.followUp({ content, ephemeral: true });
     } else {
-      await interaction.reply({ content: 'There was an error executing this command!', ephemeral: true });
+      await interaction.reply({ content, ephemeral: true });
     }
   }
 });
 
-client.once(Events.ClientReady, () => {
-  let toggle = true;
+client.once(Events.ClientReady, (readyClient) => {
+  console.log(`Logged in as ${readyClient.user.tag}`);
 
+  let toggle = true;
   const updatePresence = () => {
     const guildCount = client.guilds.cache.size;
     const userCount = client.guilds.cache.reduce(
@@ -106,4 +147,5 @@ client.once(Events.ClientReady, () => {
   setInterval(updatePresence, 30 * 1000);
 });
 
-client.login(process.env.DISCORD_TOKEN!);
+client.login(process.env.DISCORD_TOKEN!)
+  .catch(error => console.error("Login failed:", error));

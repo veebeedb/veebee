@@ -4,7 +4,6 @@ import {
     PermissionFlagsBits,
     SlashCommandStringOption,
     GuildMember,
-    TextChannel,
     User,
 } from "discord.js";
 
@@ -39,7 +38,7 @@ export default {
         }
 
         const member = interaction.member as GuildMember;
-        if (!member.permissions.has(PermissionFlagsBits.ModerateMembers)) {
+        if (!member.permissions?.has(PermissionFlagsBits.ModerateMembers)) {
             await interaction.reply({ content: "You do not have permission to timeout members.", ephemeral: true });
             return;
         }
@@ -85,10 +84,17 @@ export default {
 
 function parseDuration(input: string): number | null {
     const match = input.match(/^(\d+)([smhd])$/i);
-    if (!match) return null;
+    if (!match || match.length < 3) return null;
 
-    const value = parseInt(match[1]);
-    const unit = match[2].toLowerCase();
+    const valueStr = match[1];
+    const unitStr = match[2];
+
+    if (!valueStr || !unitStr) return null;
+
+    const value = parseInt(valueStr);
+    if (isNaN(value)) return null;
+
+    const unit = unitStr.toLowerCase();
 
     const multipliers: Record<string, number> = {
         s: 1000,
@@ -97,5 +103,8 @@ function parseDuration(input: string): number | null {
         d: 24 * 60 * 60 * 1000,
     };
 
-    return value * multipliers[unit];
+    const multiplier = multipliers[unit];
+    if (!multiplier) return null;
+
+    return value * multiplier;
 }
