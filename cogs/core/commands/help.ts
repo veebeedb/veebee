@@ -6,6 +6,8 @@ import {
     ButtonBuilder,
     ButtonStyle,
     ComponentType,
+    MessageFlags,
+    Message,
 } from "discord.js";
 
 import type { ExtendedClient } from "../../../bot.ts";
@@ -81,9 +83,9 @@ export default {
         const message = await interaction.reply({
             embeds: [generateEmbed(currentPage)],
             components: components(currentPage),
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
             fetchReply: true,
-        });
+        }) as Message;
 
         const collector = message.createMessageComponentCollector({
             componentType: ComponentType.Button,
@@ -93,8 +95,8 @@ export default {
         collector.on("collect", async (btnInteraction) => {
             if (btnInteraction.user.id !== interaction.user.id) {
                 return btnInteraction.reply({
-                    content: "These buttons aren’t for you.",
-                    ephemeral: true,
+                    content: "These buttons arent for you.",
+                    flags: MessageFlags.Ephemeral,
                 });
             }
 

@@ -8,12 +8,15 @@
     "ts-node": "ts-node-esm index.ts"
   },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "@types/node": "^24.2.0"
   },
   "peerDependencies": {
     "typescript": "^5"
   },
   "dependencies": {
-    "discord.js": "^14.21.0"
+    "axios": "^1.11.0",
+    "discord.js": "^14.21.0",
+    "rcon-client": "^4.2.5"
   }
 }

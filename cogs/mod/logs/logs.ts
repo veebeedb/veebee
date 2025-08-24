@@ -3,6 +3,7 @@ import {
     ChatInputCommandInteraction,
     PermissionFlagsBits,
     EmbedBuilder,
+    MessageFlags,
 } from "discord.js";
 
 const modLogs: {
@@ -29,7 +30,7 @@ export default {
 
     async execute(interaction: ChatInputCommandInteraction) {
         if (modLogs.length === 0) {
-            await interaction.reply({ content: "No moderation logs yet.", ephemeral: true });
+            await interaction.reply({ content: "No moderation logs yet.", flags: MessageFlags.Ephemeral });
             return;
         }
 
@@ -54,6 +55,6 @@ export default {
             embed.addFields({ name: "\u200B", value: desc });
         }
 
-        await interaction.reply({ embeds: [embed], ephemeral: true });
+        await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
     },
 };

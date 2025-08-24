@@ -5,6 +5,7 @@ import {
     SlashCommandStringOption,
     GuildMember,
     User,
+    MessageFlags,
 } from "discord.js";
 
 export default {
@@ -33,19 +34,19 @@ export default {
         const reason = interaction.options.getString("reason") ?? "No reason provided";
 
         if (!interaction.guild) {
-            await interaction.reply({ content: "This command must be used in a server.", ephemeral: true });
+            await interaction.reply({ content: "This command must be used in a server.", flags: MessageFlags.Ephemeral });
             return;
         }
 
         const member = interaction.member as GuildMember;
         if (!member.permissions?.has(PermissionFlagsBits.ModerateMembers)) {
-            await interaction.reply({ content: "You do not have permission to timeout members.", ephemeral: true });
+            await interaction.reply({ content: "You do not have permission to timeout members.", flags: MessageFlags.Ephemeral });
             return;
         }
 
         const targetMember = await interaction.guild.members.fetch(user.id).catch(() => null);
         if (!targetMember) {
-            await interaction.reply({ content: "User not found in this server.", ephemeral: true });
+            await interaction.reply({ content: "User not found in this server.", flags: MessageFlags.Ephemeral });
             return;
         }
 
@@ -53,7 +54,7 @@ export default {
         if (!durationMs || durationMs < 5000 || durationMs > 28 * 24 * 60 * 60 * 1000) {
             await interaction.reply({
                 content: "Please specify a valid duration between 5 seconds and 28 days (e.g., 10m, 1h, 2d).",
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             });
             return;
         }
@@ -70,13 +71,13 @@ export default {
 
             await interaction.reply({
                 content: `Timed out ${user.tag} for ${durationRaw}.\nReason: ${reason}`,
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             });
         } catch (err) {
             console.error(err);
             await interaction.reply({
                 content: "Failed to timeout the user.",
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             });
         }
     },

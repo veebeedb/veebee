@@ -4,7 +4,8 @@ import {
     PermissionFlagsBits,
     GuildMember,
     Role,
-    User
+    User,
+    MessageFlags
 } from "discord.js";
 import { setAutorole, getAutorole, deleteAutorole } from "./autorole";
 
@@ -63,7 +64,7 @@ export default {
         if (!interaction.inGuild()) {
             return interaction.reply({
                 content: "You must use this command in a server.",
-                ephemeral: true
+                flags: MessageFlags.Ephemeral
             });
         }
 
@@ -73,7 +74,7 @@ export default {
         if (!guild) {
             return interaction.reply({
                 content: "This command must be used in a server.",
-                ephemeral: true
+                flags: MessageFlags.Ephemeral
             });
         }
 
@@ -82,7 +83,7 @@ export default {
             if (!botMember.permissions.has(PermissionFlagsBits.ManageRoles)) {
                 return interaction.reply({
                     content: "I need the Manage Roles permission to do that.",
-                    ephemeral: true
+                    flags: MessageFlags.Ephemeral
                 });
             }
 
@@ -93,7 +94,7 @@ export default {
                     if (role.position >= botMember.roles.highest.position) {
                         return interaction.reply({
                             content: "I can't assign that role (it's higher than my highest role).",
-                            ephemeral: true
+                            flags: MessageFlags.Ephemeral
                         });
                     }
 
@@ -102,7 +103,7 @@ export default {
 
                     return interaction.reply({
                         content: `Autorole set to ${role.name}`,
-                        ephemeral: true
+                        flags: MessageFlags.Ephemeral
                     });
                 }
 
@@ -112,7 +113,7 @@ export default {
 
                     return interaction.reply({
                         content: "Autorole removed",
-                        ephemeral: true
+                        flags: MessageFlags.Ephemeral
                     });
                 }
 
@@ -121,7 +122,7 @@ export default {
                     if (!roleId) {
                         return interaction.reply({
                             content: "No autorole is currently set",
-                            ephemeral: true
+                            flags: MessageFlags.Ephemeral
                         });
                     }
 
@@ -130,13 +131,13 @@ export default {
                         deleteAutorole(guild.id);
                         return interaction.reply({
                             content: "The autorole no longer exists and has been cleared",
-                            ephemeral: true
+                            flags: MessageFlags.Ephemeral
                         });
                     }
 
                     return interaction.reply({
                         content: `Current autorole: ${role.name}`,
-                        ephemeral: true
+                        flags: MessageFlags.Ephemeral
                     });
                 }
 
@@ -148,21 +149,21 @@ export default {
                     if (role.position >= botMember.roles.highest.position) {
                         return interaction.reply({
                             content: "That role is above my highest role. I can't assign it.",
-                            ephemeral: true
+                            flags: MessageFlags.Ephemeral
                         });
                     }
 
                     if (member.roles.cache.has(role.id)) {
                         return interaction.reply({
                             content: `${user.tag} already has the ${role.name} role`,
-                            ephemeral: true
+                            flags: MessageFlags.Ephemeral
                         });
                     }
 
                     await member.roles.add(role);
                     return interaction.reply({
                         content: `Gave ${role.name} to ${user.tag}`,
-                        ephemeral: true
+                        flags: MessageFlags.Ephemeral
                     });
                 }
 
@@ -174,35 +175,35 @@ export default {
                     if (role.position >= botMember.roles.highest.position) {
                         return interaction.reply({
                             content: "That role is above my highest role. I can't remove it.",
-                            ephemeral: true
+                            flags: MessageFlags.Ephemeral
                         });
                     }
 
                     if (!member.roles.cache.has(role.id)) {
                         return interaction.reply({
                             content: `${user.tag} doesn't have the ${role.name} role`,
-                            ephemeral: true
+                            flags: MessageFlags.Ephemeral
                         });
                     }
 
                     await member.roles.remove(role);
                     return interaction.reply({
                         content: `Removed ${role.name} from ${user.tag}`,
-                        ephemeral: true
+                        flags: MessageFlags.Ephemeral
                     });
                 }
 
                 default:
                     return interaction.reply({
                         content: "Unknown subcommand",
-                        ephemeral: true
+                        flags: MessageFlags.Ephemeral
                     });
             }
         } catch (error) {
             console.error(`[Role Command] Error in ${sub} subcommand:`, error);
             return interaction.reply({
                 content: "An error occurred while processing your request",
-                ephemeral: true
+                flags: MessageFlags.Ephemeral
             });
         }
     }

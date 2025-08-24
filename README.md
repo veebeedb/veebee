@@ -1,4 +1,7 @@
 # Veebee
+[![Translation status](http://weblate.valerie.lol/widget/veebee/svg-badge.svg)](http://weblate.valerie.lol/engage/veebee/)
+
+Veebee is under 2 licenses, our "Veebee License" takes priority over GPLv3, both licenses still apply.
 
 A custom made bot, initialized and being created with [Bun](https://bun.com/), [Node.js](https://nodejs.org/), [Typescript](https://www.typescriptlang.org/), and [Discord.js](https://discordjs.guide/).
 

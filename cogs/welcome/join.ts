@@ -1,0 +1,1 @@
+// Join module for Veebee coming soon

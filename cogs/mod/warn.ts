@@ -4,6 +4,7 @@ import {
     PermissionFlagsBits,
     SlashCommandStringOption,
     GuildMember,
+    MessageFlags,
 } from "discord.js";
 
 export default {
@@ -28,13 +29,13 @@ export default {
         const reason = interaction.options.getString("reason", true) || "No reason provided";
 
         if (!interaction.guild) {
-            await interaction.reply({ content: "This command can only be used in a server.", ephemeral: true });
+            await interaction.reply({ content: "This command can only be used in a server.", flags: MessageFlags.Ephemeral });
             return;
         }
 
         const member = interaction.member as GuildMember;
         if (!member.permissions.has(PermissionFlagsBits.ModerateMembers)) {
-            await interaction.reply({ content: "You do not have permission to warn members.", ephemeral: true });
+            await interaction.reply({ content: "You do not have permission to warn members.", flags: MessageFlags.Ephemeral });
             return;
         }
 
@@ -42,12 +43,12 @@ export default {
             await user.send(
                 `You have been warned in **${interaction.guild.name}** for the following reason:\n> ${reason}`
             );
-            await interaction.reply({ content: `Successfully warned ${user.tag} via DM.`, ephemeral: true });
+            await interaction.reply({ content: `Successfully warned ${user.tag} via DM.`, flags: MessageFlags.Ephemeral });
         } catch (error) {
             console.error("Failed to send DM:", error);
             await interaction.reply({
                 content: `Could not DM ${user.tag}, but the warning was issued.`,
-                ephemeral: true,
+                flags: MessageFlags.Ephemeral,
             });
         }
     },

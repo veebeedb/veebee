@@ -16,8 +16,10 @@ report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 
 # other
 .ignore/
+dev/
 
 # data files
+/data
 *.sqlite
 *.db
 *.csv

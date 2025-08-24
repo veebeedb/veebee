@@ -8,6 +8,7 @@ import {
   GatewayIntentBits,
   REST,
   Routes,
+  MessageFlags,
   ActivityType,
 } from "discord.js";
 
@@ -116,9 +117,9 @@ client.on(Events.InteractionCreate, async (interaction) => {
     const content = 'There was an error executing this command!';
 
     if (interaction.replied || interaction.deferred) {
-      await interaction.followUp({ content, ephemeral: true });
+      await interaction.followUp({ content, flags: MessageFlags.Ephemeral });
     } else {
-      await interaction.reply({ content, ephemeral: true });
+      await interaction.reply({ content, flags: MessageFlags.Ephemeral });
     }
   }
 });
