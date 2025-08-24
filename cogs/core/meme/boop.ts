@@ -28,7 +28,7 @@ const rareResponses = [
 ];
 
 const boopGifs = [
-    "https://tenor.com/view/doggo-boop-gif-22290017"
+    "https://c.tenor.com/88HZjGgr3k0AAAAd/tenor.gif"
 ];
 
 sql`CREATE TABLE IF NOT EXISTS boops (
