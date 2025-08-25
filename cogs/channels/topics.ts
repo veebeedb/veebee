@@ -4,7 +4,6 @@ import {
     PermissionFlagsBits,
     TextChannel,
     ChannelType,
-    Collection,
     AutocompleteInteraction,
     MessageFlags,
     EmbedBuilder,

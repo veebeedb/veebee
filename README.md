@@ -21,6 +21,10 @@ A custom made bot, initialized and being created with [Bun](https://bun.com/), [
 - [ ] Ban Appeal System
 - [ ] Web Dashboard
 
+## To Do
+- [ ] Clean Up Dependencies 
+- [ ] Setup a better database system.
+
 ## Setup Guide
 
 To install dependencies:

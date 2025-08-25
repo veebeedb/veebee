@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { Manager, Player as ErelaPlayer } from "erela.js";
 import {
   Client,
   Collection,
@@ -12,10 +13,11 @@ import {
   Message,
   MessageFlags,
   ActivityType,
+  type TextBasedChannel,
 } from "discord.js";
-
-import type {
-  RESTPostAPIChatInputApplicationCommandsJSONBody,
+import {
+  TextChannel,
+  type RESTPostAPIChatInputApplicationCommandsJSONBody,
 } from "discord.js";
 
 export interface Command {
@@ -35,11 +37,12 @@ export interface ExtendedClient extends Client {
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const client = new Client({
+export const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.MessageContent,
+    GatewayIntentBits.GuildVoiceStates,
   ],
 }) as ExtendedClient;
 
@@ -190,7 +193,6 @@ client.once(Events.ClientReady, (readyClient) => {
   updatePresence();
   setInterval(updatePresence, 30 * 1000);
 });
-
 
 client.login(process.env.DISCORD_TOKEN!).catch((error) =>
   console.error("Login failed:", error)

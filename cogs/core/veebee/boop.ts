@@ -1,5 +1,5 @@
 import { SlashCommandBuilder, ChatInputCommandInteraction, Message, EmbedBuilder } from "discord.js";
-import { sql } from "../../core/database/database.ts";
+import { sql } from "../database/database.ts";
 
 const boopResponses = [
     "Eee! You booped me! 💖",
@@ -10,12 +10,12 @@ const boopResponses = [
     "UwU, that boop made me happy! 💕",
     "Boop~! 🌸",
     "Pink fluff incoming! 💗",
-    "Cherry blossoms everywhere! 🌸",
+    "*Tosses cherry blossoms at you* (･ω･)☆ 🌸",
     "Yay! Boop power! 💖",
     "Soft pink petals flutter! 🌸",
-    "So kawaii! 💗",
+    "So kawaii ^.~💗",
     "Blushing pink cheeks! 💖",
-    "Giggles and boops! 🌸",
+    "Giggles and boops back (*≧ω≦*) 🌸",
     "Pink magic boop! 💕",
 ];
 

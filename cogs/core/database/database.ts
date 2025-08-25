@@ -1,4 +1,3 @@
-// Don't think this works but whatever, will fix later.
 import { Database } from "bun:sqlite";
 
 const db = new Database("data.db");
