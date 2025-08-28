@@ -25,31 +25,38 @@ export default {
         await interaction.deferReply({ ephemeral: true });
 
         try {
-            if (subcommand === "skip") {
-                await axios.post(`${BASE_URL}/next`, {}, {
-                    headers: { Authorization: `Bearer ${API_KEY}` },
-                });
-                await interaction.editReply("⏭️ Skipped to the next track!");
-            }
+            switch (subcommand) {
+                case "skip":
+                    await axios.post(`${BASE_URL}/next`, {}, {
+                        headers: { Authorization: `Bearer ${API_KEY}` },
+                    });
+                    await interaction.editReply("⏭️ Skipped to the next track!");
+                    break;
 
-            if (subcommand === "restart") {
-                await axios.post(`${BASE_URL}/restart`, {}, {
-                    headers: { Authorization: `Bearer ${API_KEY}` },
-                });
-                await interaction.editReply("🔄 Station restarted!");
-            }
+                case "restart":
+                    await axios.post(`${BASE_URL}/restart`, {}, {
+                        headers: { Authorization: `Bearer ${API_KEY}` },
+                    });
+                    await interaction.editReply("🔄 Station restarted!");
+                    break;
 
-            if (subcommand === "status") {
-                const res = await axios.get(`${BASE_URL}/status`, {
-                    headers: { Authorization: `Bearer ${API_KEY}` },
-                });
-                await interaction.editReply(
-                    `📻 Station status: **${res.data?.status ?? "unknown"}**`
-                );
+                case "status":
+                    const res = await axios.get(BASE_URL, {
+                        headers: { Authorization: `Bearer ${API_KEY}` },
+                    });
+                    const stationStatus = res.data?.status ?? "unknown";
+                    const nowPlaying = res.data?.now_playing?.song?.title ?? "Nothing";
+                    await interaction.editReply(
+                        `📻 Station status: **${stationStatus}**\n🎵 Now playing: **${nowPlaying}**`
+                    );
+                    break;
+
+                default:
+                    await interaction.editReply("⚠️ Unknown subcommand.");
             }
         } catch (error) {
             console.error("AzuraCast error:", error);
-            await interaction.editReply("⚠️ Failed to process AzuraCast command.");
+            await interaction.editReply("⚠️ Failed to execute AzuraCast command.");
         }
     },
 };
