@@ -56,7 +56,7 @@ export default {
             }
         } catch (error) {
             console.error("AzuraCast error:", error);
-            await interaction.editReply("⚠️ Failed to execute AzuraCast command.");
+            await interaction.editReply("⚠️ Failed to execute AzuraCast command. Make sure you are using the Admin API URL and key.");
         }
     },
 };
