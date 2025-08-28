@@ -24,6 +24,7 @@
     "lavalink": "^2.13.0",
     "lavalink-client": "^2.6.0",
     "rcon-client": "^4.2.5",
+    "telnet-client": "^2.2.6",
     "youtube-sr": "^4.3.12",
     "ytdl-core": "^4.11.5"
   }
