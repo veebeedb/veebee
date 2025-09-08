@@ -1,0 +1,93 @@
+name: Build & Release Veebee
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node (for reading package.json)
+        uses: actions/setup-node@v3
+        with:
+          node-version: "20"
+
+      - name: Read version from package.json
+        id: version
+        shell: pwsh
+        run: |
+          $v = node -p "require('./package.json').version"
+          if (-not $v) { Write-Error "Failed to read version from package.json"; exit 1 }
+          echo "VERSION=$v" >> $env:GITHUB_ENV
+
+      - name: Install Bun
+        shell: pwsh
+        run: |
+          iwr -useb https://bun.sh/install | iex
+          Add-Content -Path $env:GITHUB_PATH -Value "$env:USERPROFILE\.bun\bin"
+
+      - name: Install dependencies
+        shell: pwsh
+        run: |
+          bun install
+
+      - name: Determine entry file (manager.ts or index.ts)
+        id: entry
+        shell: pwsh
+        run: |
+          if (Test-Path manager.ts) {
+            echo "ENTRY=manager.ts" >> $env:GITHUB_ENV
+          } elseif (Test-Path index.ts) {
+            echo "ENTRY=index.ts" >> $env:GITHUB_ENV
+          } else {
+            echo "ENTRY=index.ts" >> $env:GITHUB_ENV
+          }
+
+      - name: Build Windows EXE (Bun)
+        shell: pwsh
+        run: |
+          $out = "veebee-$env:VERSION.exe"
+          bun build $env:ENTRY --compile --outfile $out
+          if (-not (Test-Path $out)) { Write-Error "Build failed: $out not found"; exit 1 }
+          echo "OUTFILE=$out" >> $env:GITHUB_ENV
+
+      - name: Create release zip including docs, .env.example and cogs
+        shell: pwsh
+        run: |
+          $zipName = "veebee-$env:VERSION-windows.zip"
+          $items = @()
+          $items += $env:OUTFILE
+          $optionalFiles = @(
+            "CONTRIBUTING.md",
+            "CODE_OF_CONDUCT.md",
+            "README.md",
+            "LICENSE",
+            "LICENSE_GPLv3",
+            ".env.example"
+          )
+          foreach ($f in $optionalFiles) {
+            if (Test-Path $f) { $items += $f }
+          }
+          if (Test-Path ".\cogs") { $items += ".\cogs" }
+          if (Test-Path $zipName) { Remove-Item $zipName -Force }
+          Compress-Archive -Path $items -DestinationPath $zipName -Force
+          echo "ZIPFILE=$zipName" >> $env:GITHUB_ENV
+
+      - name: Create GitHub Release and upload artifact
+        uses: ncipollo/release-action@v1
+        with:
+          tag: "v${{ env.VERSION }}"
+          name: "Veebee v${{ env.VERSION }}"
+          body: "Release v${{ env.VERSION }} of Veebee Discord bot"
+          artifacts: ${{ env.ZIPFILE }}
+          draft: false
+          prerelease: false

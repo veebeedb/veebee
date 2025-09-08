@@ -1,15 +1,46 @@
 import { ShardingManager } from "discord.js";
 import { initializePremiumAPI } from "./premium/api/server";
+import path from "path";
+import process from "process";
 
-const manager = new ShardingManager("./bot.ts", {
-  token: process.env.DISCORD_TOKEN!,
-  totalShards: "auto",
-});
+const isRunningScript = process.argv.some(
+  (arg) => typeof arg === "string" && /\.(ts|js)$/.test(arg)
+);
+const isCompiled = !isRunningScript;
+const isShard = process.argv.includes("--worker");
 
-manager.on("shardCreate", (shard) => {
-  console.log(`Launched shard ${shard.id}`);
-});
+if (isShard) {
+  import("./bot")
+    .then(() => {
+      console.log("Shard process: bot module loaded.");
+    })
+    .catch((err) => {
+      console.error("Failed to load bot module in shard process:", err);
+      process.exit(1);
+    });
+} else {
+  const shardEntry = isCompiled
+    ? process.execPath
+    : path.join(__dirname, "bot.ts");
 
-initializePremiumAPI(manager);
+  const manager = new ShardingManager(shardEntry, {
+    token: process.env.DISCORD_TOKEN!,
+    totalShards: "auto",
+    shardArgs: ["--worker"],
+  });
 
-manager.spawn();
+  manager.on("shardCreate", (shard) => {
+    console.log(`Launched shard ${shard.id}`);
+  });
+
+  initializePremiumAPI(manager);
+
+  manager
+    .spawn({ delay: 5000 })
+    .then(() => {
+      console.log("All shards spawn initiated.");
+    })
+    .catch((err) => {
+      console.error("Failed to spawn shards:", err);
+    });
+}

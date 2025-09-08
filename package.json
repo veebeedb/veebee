@@ -1,11 +1,13 @@
 {
   "name": "veebee",
+  "version": "1.0.0",
   "module": "index.ts",
   "type": "module",
   "private": true,
   "scripts": {
     "start": "bun run index.ts",
-    "ts-node": "ts-node-esm index.ts"
+    "ts-node": "ts-node-esm index.ts",
+    "start:exe": "./veebee.exe"
   },
   "devDependencies": {
     "@types/bun": "latest",
