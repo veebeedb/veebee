@@ -1,93 +1,73 @@
-name: Build & Release Veebee
+name: Build and Release Veebee
 
 on:
   push:
-    branches:
-      - main
-  workflow_dispatch:
-
-permissions:
-  contents: write
+    tags:
+      - 'v*.*.*'
 
 jobs:
-  build-and-release:
-    runs-on: windows-latest
+  build-release:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+
+    env:
+      VERSION: ${{ github.ref_name }}
+      ZIP_NAME: veebee-${{ github.ref_name }}.zip
+
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - name: Setup Node (for reading package.json)
-        uses: actions/setup-node@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: "20"
-
-      - name: Read version from package.json
-        id: version
-        shell: pwsh
-        run: |
-          $v = node -p "require('./package.json').version"
-          if (-not $v) { Write-Error "Failed to read version from package.json"; exit 1 }
-          echo "VERSION=$v" >> $env:GITHUB_ENV
+          node-version: 20
 
       - name: Install Bun
-        shell: pwsh
+        shell: bash
         run: |
-          iwr -useb https://bun.sh/install | iex
-          Add-Content -Path $env:GITHUB_PATH -Value "$env:USERPROFILE\.bun\bin"
+          curl -fsSL https://bun.sh/install | bash
+          echo "$HOME/.bun/bin" >> $GITHUB_PATH
+          bun --version
 
       - name: Install dependencies
-        shell: pwsh
-        run: |
-          bun install
+        run: bun install
 
-      - name: Determine entry file (manager.ts or index.ts)
-        id: entry
-        shell: pwsh
+      - name: Build executable
+        if: runner.os == 'Windows'
         run: |
-          if (Test-Path manager.ts) {
-            echo "ENTRY=manager.ts" >> $env:GITHUB_ENV
-          } elseif (Test-Path index.ts) {
-            echo "ENTRY=index.ts" >> $env:GITHUB_ENV
-          } else {
-            echo "ENTRY=index.ts" >> $env:GITHUB_ENV
-          }
+          bun build index.ts --compile --outfile "veebee.exe"
 
-      - name: Build Windows EXE (Bun)
-        shell: pwsh
+      - name: Copy other OS builds (optional)
+        if: runner.os != 'Windows'
         run: |
-          $out = "veebee-$env:VERSION.exe"
-          bun build $env:ENTRY --compile --outfile $out
-          if (-not (Test-Path $out)) { Write-Error "Build failed: $out not found"; exit 1 }
-          echo "OUTFILE=$out" >> $env:GITHUB_ENV
+          mkdir -p build
+          cp index.ts build/
 
-      - name: Create release zip including docs, .env.example and cogs
-        shell: pwsh
+      - name: Create release folder
         run: |
-          $zipName = "veebee-$env:VERSION-windows.zip"
-          $items = @()
-          $items += $env:OUTFILE
-          $optionalFiles = @(
-            "CONTRIBUTING.md",
-            "CODE_OF_CONDUCT.md",
-            "README.md",
-            "LICENSE",
-            "LICENSE_GPLv3",
-            ".env.example"
-          )
-          foreach ($f in $optionalFiles) {
-            if (Test-Path $f) { $items += $f }
-          }
-          if (Test-Path ".\cogs") { $items += ".\cogs" }
-          if (Test-Path $zipName) { Remove-Item $zipName -Force }
-          Compress-Archive -Path $items -DestinationPath $zipName -Force
-          echo "ZIPFILE=$zipName" >> $env:GITHUB_ENV
+          mkdir release
+          if [ -f veebee.exe ]; then cp veebee.exe release/; fi
+          cp CONTRIBUTE.md release/ || true
+          cp CODE_OF_CONDUCT.md release/ || true
+          cp README.md release/ || true
+          cp LICENSE release/ || true
+          cp LICENSE_GPLv3 release/ || true
+          cp .env.example release/ || true
 
-      - name: Create GitHub Release and upload artifact
-        uses: ncipollo/release-action@v1
+      - name: Zip release
+        run: |
+          cd release
+          zip -r "../${ZIP_NAME}" *
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
         with:
-          tag: "v${{ env.VERSION }}"
-          name: "Veebee v${{ env.VERSION }}"
-          body: "Release v${{ env.VERSION }} of Veebee Discord bot"
-          artifacts: ${{ env.ZIPFILE }}
-          draft: false
-          prerelease: false
+          tag_name: ${{ github.ref_name }}
+          name: "Veebee ${{ github.ref_name }}"
+          body: "Release of Veebee version ${{ github.ref_name }}"
+          files: ${{ ZIP_NAME }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
