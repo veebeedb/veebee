@@ -11,7 +11,6 @@ This document outlines the process for contributing and the standards we expect.
 2. **Create a new branch** for your contribution:
    ```bash
    git checkout -b feature/your-feature-name
-````
 
 3. **Make your changes** and commit them with clear, descriptive messages.
 4. **Push to your branch**:
@@ -70,5 +69,3 @@ Include the following where possible:
 
 Participation in this project is governed by the [Code of Conduct](CODE_OF_CONDUCT.md).
 By contributing, you agree to abide by its terms.
-
-```
