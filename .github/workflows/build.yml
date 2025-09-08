@@ -1,48 +1,58 @@
-name: Build and Release
+name: Build and Release Veebee
 
 on:
   push:
     tags:
-      - '*'
-
-env:
-  VERSION: ${{ github.ref_name }}
+      - 'v*.*.*'
+  workflow_dispatch:
 
 jobs:
-  build:
-    runs-on: windows-latest
-    defaults:
-      run:
-        shell: pwsh
-
+  build-release:
+    runs-on: ubuntu-latest
+    env:
+      VERSION: ${{ github.ref_name }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Set up Bun
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Bun
         run: |
-          iwr -useb https://bun.sh/install | iex
-          Add-Content -Path $env:GITHUB_PATH -Value "$env:USERPROFILE\.bun\bin"
+          curl -fsSL https://bun.sh/install | bash
+          echo "$HOME/.bun/bin" >> $GITHUB_PATH
+        shell: bash
 
       - name: Install dependencies
         run: bun install
 
-      - name: Build EXE
-        run: bun build index.ts --compile --outfile "veebee-${env:VERSION}.exe"
+      - name: Build Veebee executable
+        run: bun build index.ts --compile --outfile "veebee-${VERSION}.exe"
 
-      - name: Create ZIP
-        id: zip
+      - name: Create release directory
+        run: mkdir release
+
+      - name: Copy extra files
         run: |
-          $zipName = "veebee-${env:VERSION}.zip"
-          Compress-Archive -Path "veebee-${env:VERSION}.exe","CONTRIBUTING.md","CODE_OF_CONDUCT.md","README.md","LICENSE","LICENSE_GPLv3",".env.example" -DestinationPath $zipName
-          echo "zip_name=$zipName" >> $env:GITHUB_ENV
-          echo "::set-output name=zip::$zipName"
+          cp "veebee-${VERSION}.exe" release/
+          cp CONTRIBUTING.md release/ || true
+          cp CODE_OF_CONDUCT.md release/ || true
+          cp README.md release/ || true
+          cp LICENSE release/ || true
+          cp LICENSE_GPLv3 release/ || true
+          cp .env.example release/ || true
 
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v1
+      - name: Zip release
+        run: zip -r "veebee-${VERSION}.zip" release
+
+      - name: Create GitHub release
+        uses: ncipollo/release-action@v1
         with:
-          tag_name: ${{ github.ref_name }}
-          name: ${{ steps.zip.outputs.zip }}
-          asset_path: ${{ steps.zip.outputs.zip }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ github.ref_name }}
+          name: Veebee ${{ github.ref_name }}
+          artifacts: "veebee-${VERSION}.zip"
+          draft: false
+          prerelease: false
