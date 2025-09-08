@@ -15,7 +15,7 @@ jobs:
     env:
       VERSION: ${{ github.ref_name }}
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Set up Node.js
@@ -31,15 +31,15 @@ jobs:
 
       - name: Install dependencies
         run: bun install
+        shell: bash
 
       - name: Build Veebee executable
         run: bun build index.ts --compile --outfile "veebee-${VERSION}.exe"
+        shell: bash
 
-      - name: Create release directory
-        run: mkdir release
-
-      - name: Copy extra files
+      - name: Prepare release folder
         run: |
+          mkdir -p release
           cp "veebee-${VERSION}.exe" release/
           cp CONTRIBUTING.md release/ || true
           cp CODE_OF_CONDUCT.md release/ || true
@@ -47,9 +47,11 @@ jobs:
           cp LICENSE release/ || true
           cp LICENSE_GPLv3 release/ || true
           cp .env.example release/ || true
+        shell: bash
 
-      - name: Zip release
+      - name: Create zip
         run: zip -r "veebee-${VERSION}.zip" release
+        shell: bash
 
       - name: Create GitHub release
         uses: ncipollo/release-action@v1
@@ -59,3 +61,5 @@ jobs:
           artifacts: "veebee-${VERSION}.zip"
           draft: false
           prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
