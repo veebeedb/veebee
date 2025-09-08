@@ -1,4 +1,5 @@
 # Veebee
+
 [![Translation status](http://weblate.valerie.lol/widget/veebee/svg-badge.svg)](http://weblate.valerie.lol/engage/veebee/)
 
 Veebee is under 2 licenses, our "Veebee License" takes priority over GPLv3, both licenses still apply.
@@ -6,24 +7,29 @@ Veebee is under 2 licenses, our "Veebee License" takes priority over GPLv3, both
 A custom made bot, initialized and being created with [Bun](https://bun.com/), [Node.js](https://nodejs.org/), [Typescript](https://www.typescriptlang.org/), and [Discord.js](https://discordjs.guide/).
 
 ## Veebee Links
+
 [Trello Roadmap](https://trello.com/b/UiHToYsG/veebee-roadmap)
 
 ## Planned Features
+
 - [ ] Plugins (Cogs), added to servers via commands. (Inspired by Red-DiscordBot)
-- [ ] Moderation System
+- [x] Moderation System (Functioning, but not complete)
 - [ ] Server Syncing (Ban Sync, etc)
 - [ ] Economy System (Banking, Shop, etc)
 - [ ] Audio Features (Music, MP3, etc)
 
 ## TBD Ideas
+
 - [ ] Sakura & Bee Branding
 - [ ] Allow Custom Commands
 - [ ] Ban Appeal System
 - [ ] Web Dashboard
 
 ## To Do
-- [ ] Clean Up Dependencies 
-- [ ] Setup a better database system.
+
+- [ ] Clean Up Dependencies
+- [ ] Convert Database System to MongoDB, or MariaDB.
+- [ ] Improve Premium System, tie directly to account instead of roles, etc.
 
 ## Setup Guide
 
