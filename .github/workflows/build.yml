@@ -8,14 +8,19 @@ on:
     tags:
       - 'v*.*.*'
   workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Optional tag name to use when manually dispatching (e.g. v1.2.3)'
+        required: false
 
 jobs:
   build-release:
     runs-on: ubuntu-latest
     env:
-      VERSION: ${{ github.ref_name }}
+      # Prefer workflow_dispatch input tag, then pushed tag name, then fallback to commit sha.
+      VERSION: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.tag || github.ref_name || github.sha }}
     steps:
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Set up Node.js
@@ -31,11 +36,11 @@ jobs:
 
       - name: Install dependencies
         run: bun install
-        shell: bash
 
-      - name: Build Veebee executable
-        run: bun build index.ts --compile --outfile "veebee-${VERSION}.exe"
-        shell: bash
+      - name: Build Veebee executable (Windows)
+        run: |
+          # If you want Linux, remove --target or set to a Linux target
+          bun build index.ts --compile --target=bun-windows-x64 --outfile "veebee-${VERSION}.exe"
 
       - name: Prepare release folder
         run: |
@@ -47,19 +52,23 @@ jobs:
           cp LICENSE release/ || true
           cp LICENSE_GPLv3 release/ || true
           cp .env.example release/ || true
-        shell: bash
 
-      - name: Create zip
+      - name: Create release zip
         run: zip -r "veebee-${VERSION}.zip" release
-        shell: bash
 
-      - name: Create GitHub release
+      - name: Create GitHub release and upload artifact
         uses: ncipollo/release-action@v1
         with:
-          tag: ${{ github.ref_name }}
-          name: Veebee ${{ github.ref_name }}
-          artifacts: "veebee-${VERSION}.zip"
+          # tag used to identify the release. For push->tag runs this is the pushed tag.
+          tag: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.tag || github.ref_name }}
+          # exact release title you requested
+          name: Veebee ${{ env.VERSION }}
+          # make sure the zip file created above is attached
+          artifacts: "veebee-${{ env.VERSION }}.zip"
+          # ensure artifacts are uploaded before publishing the release (prevents source-only attachments)
+          immutableCreate: true
+          # replace existing artifacts with the new ones if updating an existing release with same tag
+          replacesArtifacts: true
           draft: false
           prerelease: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
+          token: ${{ secrets.REPO_TOKEN }}
