@@ -1,15 +1,15 @@
-Veebee License, Version 1.2, August 24 2025
+Veebee License, Version 1.3, August 24 2025
 
    ________  ________  ________  ________  ________  ________ 
   /    /   \/        \/        \/       / /        \/        \
  /         /         /         /        \/         /         /
  \        /        _/        _/         /        _/        _/ 
   \\_____/\________/\________/\________/\________/\________/  
-  
+
 Copyright (C) 2025 Rose Haven Network, Veebee Discord Bot
 
 Preamble:
-The Veebee License is a dual-license agreement that incorporates and extends the GNU General Public License version 3 (GPLv3). This license maintains all the rights and obligations of the GPLv3 while adding specific restrictions regarding commercial and AI-related usage. All terms of the GPLv3 apply unless explicitly modified by this license. In case of any conflict between this license and the GPLv3, the terms of this license shall take precedence.
+The Veebee License is a dual-license agreement that incorporates and extends the GNU General Public License version 3 (GPLv3). This license maintains all the rights and obligations of the GPLv3 while adding specific restrictions regarding commercial, monetization, and AI-related usage. All terms of the GPLv3 apply unless explicitly modified by this license. In case of any conflict between this license and the GPLv3, the terms of this license shall take precedence.
 
 1. Definitions.
    “Veebee Code” refers to the source code and object code of the program named Veebee.
@@ -17,29 +17,39 @@ The Veebee License is a dual-license agreement that incorporates and extends the
    “Distribute” means to provide copies, in source or binary form, to any third party.
    “Modify” means to adapt or change the code to form derivative works.
    “AI Use” means any use related to artificial intelligence or machine learning, including using the code as training data for models or as part of any AI system.
+   “Monetize” means earning revenue directly or indirectly from the Veebee Code, including but not limited to selling, licensing, offering as a paid service, or incorporating into a commercial product.
 
 2. License Grant.
-   You are permitted to use, copy, study, modify, and distribute the Veebee Code for any purpose *except* as restricted below.  You may incorporate the Veebee Code into non-commercial software or services and share it freely, provided you comply with all terms of this license.
+   You are permitted to use, copy, study, modify, and distribute the Veebee Code for any purpose *except* as restricted below. You may incorporate the Veebee Code into non-commercial software or services and share it freely, provided you comply with all terms of this license.
 
-3. Copyleft Requirement.
-   If you distribute original or modified Veebee Code, you **must** do so under this same Veebee License.  You must include all original copyright, attribution, and license notices, and you must include a copy of this license with every distribution.  If you modify the code, you must mark the changes and date of modification.  In all cases, recipients must receive the full source code or a written offer to provide the source, so they can exercise the same rights. 
+3. Copyleft and Distribution Requirement.
+   3.1 You **must** distribute any original or modified Veebee Code under this same Veebee License.  
+   3.2 You **must** include all original copyright, attribution, and license notices with any distribution.  
+   3.3 You **must** include a copy of this license with every distribution.  
+   3.4 If Veebee Code is combined, linked, or redistributed with other code under different licenses, the terms of this Veebee License **continue to apply exclusively to Veebee Code**, and recipients must always receive a copy of this license alongside the distribution. Any attempt to override or circumvent this license is void.  
+   3.5 If you modify the code, you must mark the changes and date of modification. Recipients must receive the full source code or a written offer to provide it, so they can exercise the same rights.
 
 4. AI Use Restriction.
-   No entity may use the Veebee Code in the training or operation of any artificial intelligence, neural network, machine learning model, or similar AI system, **unless** the entity has obtained explicit permission in writing from the Veebee copyright holders.  Any unauthorized use of Veebee in an AI or ML context is strictly prohibited.
+   No entity may use the Veebee Code in the training or operation of any artificial intelligence, neural network, machine learning model, or similar AI system, **unless** the entity has obtained explicit permission in writing from the Veebee copyright holders. Any unauthorized use of Veebee in an AI or ML context is strictly prohibited.
 
-5. Commercial Use Restriction.
-   No part of the Veebee Code may be used for commercial purposes without explicit permission.  This includes selling copies of Veebee, offering it as a service or product to customers, or any for-profit exploitation.  To use Veebee commercially, you must obtain a separate license or authorization from the copyright holder.
+5. Commercial and Monetization Restriction.
+   No part of the Veebee Code may be used for commercial purposes or monetized in any way without explicit permission. This includes, but is not limited to:
+      - Selling copies of Veebee.
+      - Incorporating Veebee into paid software or services.
+      - Licensing Veebee code for a fee.
+      - Using Veebee as part of any for-profit product, service, or platform.
+   To use Veebee commercially or for monetization, you must obtain a separate license or written authorization from the copyright holder.
 
-6. Restrictions.
-   The foregoing restrictions on AI use and commercial use are in addition to the usual GPL-like terms.  Any attempt to impose further restrictions beyond those stated here is void.  All requirements are binding on any recipient of the code.
+6. Additional Restrictions.
+   The foregoing restrictions on AI use and commercial/monetization use are in addition to the usual GPL-like terms. Any attempt to impose further restrictions beyond those stated here is void. All requirements are binding on any recipient of the code.
 
 7. Disclaimer of Warranty.
-   Veebee is provided **as-is**, without any warranty of any kind.  The authors and distributors disclaim all implied warranties, including (but not limited to) merchantability or fitness for a particular purpose.  Use at your own risk.
+   Veebee is provided **as-is**, without any warranty of any kind. The authors and distributors disclaim all implied warranties, including (but not limited to) merchantability or fitness for a particular purpose. Use at your own risk.
 
 8. Limitation of Liability.
    In no event will the authors or distributors of Veebee be liable for any damages arising from the use of the code, even if advised of the possibility of such damage.
 
 9. Applicability.
-   These terms apply to anyone who receives Veebee code.  By using or distributing Veebee, you agree to this license.
+   These terms apply to anyone who receives Veebee code. By using, modifying, or distributing Veebee, you agree to this license. All terms of the GPLv3 remain in effect unless explicitly modified by this license.
 
 END OF LICENSE

@@ -15,6 +15,7 @@ import {
   ActivityType,
   type TextBasedChannel,
 } from "discord.js";
+import { initializePremiumManager } from "./premium/premiumManager";
 import {
   TextChannel,
   type RESTPostAPIChatInputApplicationCommandsJSONBody,
@@ -65,38 +66,57 @@ function getAllCommandFiles(dir: string): string[] {
   return files;
 }
 
-const cogsPath = path.join(__dirname, "cogs");
-const commandFiles = getAllCommandFiles(cogsPath);
+const commandDirs = [
+  { path: path.join(__dirname, "cogs"), category: (file: string) => path.relative(path.join(__dirname, "cogs"), file).split(path.sep)[0] },
+  { path: path.join(__dirname, "premium", "commands"), category: () => "premium" }
+];
+
 const commands: RESTPostAPIChatInputApplicationCommandsJSONBody[] = [];
 
-for (const filePath of commandFiles) {
-  try {
-    const fileUrl = new URL(`file://${filePath}`).href;
-    const imported = await import(fileUrl);
-    if (imported?.default) {
-      const command: Command = imported.default;
-      if ("data" in command && "execute" in command) {
-        const relativePath = path.relative(cogsPath, filePath);
-        const category = relativePath.split(path.sep)[0];
-        (command as any).category = category;
-        client.commands.set(command.data.name, command);
-        commands.push(command.data.toJSON());
+for (const dir of commandDirs) {
+  const commandFiles = getAllCommandFiles(dir.path);
+  
+  for (const filePath of commandFiles) {
+    try {
+      const fileUrl = new URL(`file://${filePath}`).href;
+      const imported = await import(fileUrl);
+      if (imported?.default) {
+        const command: Command = imported.default;
+        if ("data" in command && "execute" in command) {
+          const category = dir.category(filePath);
+          (command as any).category = category;
+          client.commands.set(command.data.name, command);
+          commands.push(command.data.toJSON());
+          console.log(`Loaded command: ${command.data.name} (${category})`);
+        }
       }
+    } catch (error) {
+      console.error(`Error loading command from ${filePath}:`, error);
     }
-  } catch (error) {
-    console.error(`Error loading command from ${filePath}:`, error);
   }
 }
 
 const rest = new REST({ version: "10" }).setToken(process.env.DISCORD_TOKEN!);
 
 try {
-  console.log("Started refreshing application (/) commands.");
+  const premiumCommands = commands.filter(cmd => cmd.name.startsWith("premium"));
+  const globalCommands = commands.filter(cmd => !cmd.name.startsWith("premium"));
+
+  console.log("Started refreshing global commands.");
   await rest.put(
     Routes.applicationCommands(process.env.CLIENT_ID!),
-    { body: commands }
+    { body: globalCommands }
   );
-  console.log(`Successfully reloaded ${commands.length} application (/) commands.`);
+
+  if (premiumCommands.length > 0) {
+    console.log("Started refreshing premium guild commands.");
+    await rest.put(
+      Routes.applicationGuildCommands(process.env.CLIENT_ID!, "1293118933498462311"),
+      { body: premiumCommands }
+    );
+  }
+
+  console.log(`Successfully reloaded ${globalCommands.length} global commands and ${premiumCommands.length} premium guild commands.`);
 } catch (error) {
   console.error("Failed to refresh application commands:", error);
 }
@@ -159,8 +179,14 @@ client.on(Events.MessageCreate, async (message: Message) => {
   }
 });
 
+import { syncPremiumRoles } from "./premium/premiumManager";
+
 client.once(Events.ClientReady, (readyClient) => {
   console.log(`Logged in as ${readyClient.user.tag}`);
+  initializePremiumManager(readyClient);
+
+  syncPremiumRoles(readyClient);
+  setInterval(() => syncPremiumRoles(readyClient), 5 * 60 * 1000);
 
   let toggle = 0;
   const presenceLines = [
