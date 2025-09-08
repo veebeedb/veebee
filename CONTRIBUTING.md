@@ -65,7 +65,10 @@ Include the following where possible:
 
 ---
 
-## Code of Conduct
+## Code of Conduct and License
 
-Participation in this project is governed by the [Code of Conduct](CODE_OF_CONDUCT.md).
+Participation in this project is governed by the [Code of Conduct](CODE_OF_CONDUCT.md).  
 By contributing, you agree to abide by its terms.
+
+All contributions to Veebee are made under the terms of the [LICENSE](LICENSE).  
+By submitting code, documentation, or other content, you agree that your contributions will be distributed under the same license.
