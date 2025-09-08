@@ -1,6 +1,3 @@
-Got it. Here’s a professional, project-specific `CONTRIBUTING.md` template for **Veebee**:
-
-````markdown
 # Contributing to Veebee
 
 Thank you for your interest in contributing to Veebee, a Discord bot built with Bun, Node.js, and Discord.js.  
