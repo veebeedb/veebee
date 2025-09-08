@@ -1,5 +1,8 @@
 name: Build and Release Veebee
 
+permissions:
+  contents: write
+
 on:
   push:
     tags:
