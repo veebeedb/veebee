@@ -6,6 +6,10 @@ Veebee is under 2 licenses, our "Veebee License" takes priority over GPLv3, both
 
 A custom made bot, initialized and being created with [Bun](https://bun.com/), [Typescript](https://www.typescriptlang.org/), [Discord.js](https://discordjs.guide/).
 
+## DISCLAIMER
+
+Veebee - Discord Bot is not ready for full production use, we are not responsible for any damage users may cause with Veebee, you have been warned.
+
 ## Veebee Links
 
 [Trello Roadmap](https://trello.com/b/UiHToYsG/veebee-roadmap)
