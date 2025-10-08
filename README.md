@@ -4,7 +4,7 @@
 
 Veebee is under 2 licenses, our "Veebee License" takes priority over GPLv3, both licenses still apply.
 
-A custom made bot, initialized and being created with [Bun](https://bun.com/), [Node.js](https://nodejs.org/), [Typescript](https://www.typescriptlang.org/), and [Discord.js](https://discordjs.guide/).
+A custom made bot, initialized and being created with [Bun](https://bun.com/), [Typescript](https://www.typescriptlang.org/), [Discord.js](https://discordjs.guide/).
 
 ## Veebee Links
 
@@ -12,11 +12,15 @@ A custom made bot, initialized and being created with [Bun](https://bun.com/), [
 
 ## Planned Features
 
-- [ ] Plugins (Cogs), added to servers via commands. (Inspired by Red-DiscordBot)
-- [x] Moderation System (Functioning, but not complete)
+Priority:
+- [x] Moderation System (Mostly functioning, not complete)
+
+- [ ] Plugins (Petals), enabled and disabled on servers via commands. (Inspired by Red-DiscordBot's Cog System)
 - [ ] Server Syncing (Ban Sync, etc)
 - [ ] Economy System (Banking, Shop, etc)
-- [ ] Audio Features (Music, MP3, etc)
+- [ ] Audio Features (Music, MP3, etc) (In progress)
+- [ ] User Opt-ins/Opt-outs (Allowing the user to opt-in/out of bot storing your data [excluding moderation])
+- [ ] Improved Database
 
 ## TBD Ideas
 
@@ -27,8 +31,12 @@ A custom made bot, initialized and being created with [Bun](https://bun.com/), [
 
 ## To Do
 
+Priority:
+- [ ] Secure Database Encryption
+
+Non-Priority:
 - [ ] Clean Up Dependencies
-- [ ] Convert Database System to MongoDB, or MariaDB.
+- [ ] Convert Database System to MongoDB, or MariaDB. (Likely MongoDB)
 - [ ] Improve Premium System, tie directly to account instead of roles, etc.
 
 ## Setup Guide

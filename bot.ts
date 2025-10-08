@@ -41,6 +41,8 @@ export interface ExtendedClient extends Client {
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+import { StatusManager } from "./cogs/status/statusManager";
+
 export const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
@@ -198,6 +200,12 @@ try {
 }
 
 const prefix = process.env.BOT_PREFIX ?? "";
+
+// Initialize StatusManager when client is ready
+client.once(Events.ClientReady, () => {
+  console.log("Initializing StatusManager...");
+  new StatusManager(client);
+});
 
 function withSilentFlags(options: any) {
   if (!options)
