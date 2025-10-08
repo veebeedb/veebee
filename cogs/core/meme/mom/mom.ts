@@ -8,9 +8,9 @@ import {
   ThreadChannel,
   NewsChannel,
   DMChannel,
-  PartialDMChannel,
   Client,
 } from "discord.js";
+import type { PartialDMChannel } from "discord.js";
 import { sql } from "../../database/database";
 
 sql`
@@ -194,6 +194,9 @@ export default {
 
       const after = (m[1] ?? "").trim();
       if (!after) return;
+      
+      // Ignore messages that are too long to prevent spam
+      if (after.length > 100) return;
 
       const responseText = `Hey, ${after}, I'm Mom.`;
 
