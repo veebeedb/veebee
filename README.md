@@ -19,12 +19,13 @@ Veebee - Discord Bot is not ready for full production use, we are not responsibl
 Priority:
 - [x] Moderation System (Mostly functioning, not complete)
 
+Non-priority:
 - [ ] Plugins (Petals), enabled and disabled on servers via commands. (Inspired by Red-DiscordBot's Cog System)
 - [ ] Server Syncing (Ban Sync, etc)
-- [ ] Economy System (Banking, Shop, etc)
-- [ ] Audio Features (Music, MP3, etc) (In progress)
+- [ ] Economy System (Banking, Shop, Casino, etc.)
+- [ ] Audio Features (Music, MP3, etc.) (In progress)
 - [ ] User Opt-ins/Opt-outs (Allowing the user to opt-in/out of bot storing your data [excluding moderation])
-- [ ] Improved Database
+- [ ] Improved Database System
 
 ## TBD Ideas
 
